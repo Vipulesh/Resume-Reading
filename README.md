@@ -62,6 +62,51 @@ Located in [`agents/extractor_agent.py`](agents/extractor_agent.py), this agent 
 
 Located in [`agents/validator_agent.py`](agents/validator_agent.py), this agent validates the extracted entities to ensure their correctness.
 
+## Resume Processing Workflow Code Overview
+
+This code snippet defines a structured workflow for processing resumes, extracting data, and validating entities. Key components include `langgraph` and `langchain` for state-based control flow, custom agents for specific tasks, and secure environment variable management.
+
+### Libraries and Imports
+
+- **`TypedDict`, `Literal`**: Provides type-checking and literal types for improved type safety.
+- **`random`, `json`, `os`, `getpass`**: Handles randomness, JSON parsing, file system access, and secure user input.
+- **`IPython.display`**: Used for displaying the resulting graph.
+- **`langgraph`, `langchain`**: Used for workflow control and interactions with language models.
+- **Custom agents**: `ResumeReaderAgent`, `ExtractorAgent`, `ValidatorAgent` are custom classes for specific tasks within resume processing.
+- **Environment management**: `.env` loading via `dotenv` secures API keys.
+
+### Environment Variables and Setup
+
+Environment variables are loaded from a `.env` file:
+- `LANGSMITH_API_KEY`: Secures the connection to `Langchain` API.
+- `GROQ_API_KEY`: Secures access to the `Groq` API for language model interactions.
+
+These are set up for tracing, endpoint management, and integration with the `ChatGroq` language model.
+
+### Key Functions
+
+- **`get_resume_text(file_path: str) -> str`**: Reads and returns text from a resume file using `ResumeReaderAgent`.
+- **`extract_entities(resume_text: str) -> str`**: Extracts structured information from the resume text using `ExtractorAgent`.
+- **`validate_entities(extracted_data: str) -> str`**: Validates extracted data using `ValidatorAgent` to ensure accuracy.
+
+### Workflow Definition with `StateGraph`
+
+1. **Nodes**:
+   - **`assistant`**: Uses the LLM with bound tools to process instructions.
+   - **`tools`**: Contains the defined functions and conditionally routes based on tool calls.
+
+2. **Edges and Conditional Routing**:
+   - Workflow starts at `START`, moves to `assistant`, and uses `tools_condition` to check if further processing in `tools` is needed.
+   - The graph routes back to `assistant` or ends based on conditions.
+
+3. **Displaying the Workflow**:
+   - `display()` is used to visualize the compiled workflow graph with the Mermaid graphing library.
+
+### Running the Workflow
+
+The process is initiated by providing a file path to a resume PDF and an instruction message. The `react_graph` processes the messages, calling appropriate agents and tools in sequence, and returns validated, structured information from the resume.
+
+
 ## Environment Variables
 
 - `GEMINI_API_KEY`: API key for the Gemini model.
