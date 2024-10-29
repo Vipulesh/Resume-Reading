@@ -48,8 +48,6 @@ This project is designed to read resumes in PDF or DOCX format, extract structur
 2. **Specify the resume file path**:
     Modify the `file_path` variable in `main.py` to point to the resume file you want to process.
 
-## Project Structure
-
 ## Agents
 
 ### ResumeReaderAgent
